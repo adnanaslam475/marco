@@ -38,8 +38,6 @@ app.get("/apisearchbase", async (req, res) => {
     const filter = req.query.filter;
     const online = req.query.online;
     const query = encodeURI(req.query.query.replace(/\s/g, "+"));
-    // console.log('[const query]: ', query);
-    // const query = req.query.query;
     const fields = req.query.fields;
     const start = req.query.start;
     const sort = req.query.sort;
