@@ -1,7 +1,7 @@
 import React from "react";
 import ApiFunc from "../utilities/apiFunc";
 import LoadingSpinner from "../utilities/LoadingSpinner";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import { HashLink } from "react-router-hash-link";
 
 import theme from "../../assets/theme";

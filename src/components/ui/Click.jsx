@@ -1,15 +1,22 @@
-import React from 'react';
-import { Button } from "@mui/material";
-
+import React from "react";
+import Button from "@mui/material/Button";
 
 const Bottone = () => {
-    return(
-        <Button variant="contained" sx={{color: 'secondary.main', 
-        backgroundColor: 'primary.main',
-        '&:hover': {
-            backgroundColor: 'secondary.main',
-            color: 'primary.main'
-          }}} >Contained</Button>);
-}
+  return (
+    <Button
+      variant="contained"
+      sx={{
+        color: "secondary.main",
+        backgroundColor: "primary.main",
+        "&:hover": {
+          backgroundColor: "secondary.main",
+          color: "primary.main",
+        },
+      }}
+    >
+      Contained
+    </Button>
+  );
+};
 
 export default Bottone;

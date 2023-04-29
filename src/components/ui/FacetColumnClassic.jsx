@@ -1,40 +1,33 @@
 import * as React from "react";
-import {
-  Box,
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import Accordion from "@mui/material/Accordion";
+import Typography from "@mui/material/Typography";
+
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CancelIcon from "@mui/icons-material/Cancel";
-import {
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  ListItemIcon,
-} from "@mui/material";
+
+import ListItem from "@mui/material/ListItem";
+import List from "@mui/material/List";
+import ListItemText from "@mui/material/ListItemText";
 
 // custom import
 import { API_URL } from "../utilities/apiUrl";
 import theme from "../../assets/theme";
 import { generateUniqueKey } from "../utilities/RandomKeyGen";
 import LoadingSpinner from "../utilities/LoadingSpinner";
-import CustomizedSwitches from "./filters/IosSwitch";
+import CustomizedSwitches, {
+  CustomizedFilteredSwitches,
+} from "./filters/IosSwitch";
 import ApiFunc from "../utilities/apiFunc";
+import { useState } from "react";
 
 const FacetColumnClassic = (props) => {
-  //   console.log('FacetClassicsidebar Query:',props.query);
-  //   console.log('FacetClassicsidebar online:',props.online);
-
-  // LINK IN PRODUZIONE
-  // https://stackoverflow.com/questions/69955965/proxying-api-requests-in-production-for-react-express-app
-  const url = `${API_URL}/apifacetsclassic?online=${props.online}&query=${props.query}`;
-
-  // console.log('apifacetsclassic URL', url);
+  const { toggles, setToggles } = props;
+  const url = `${API_URL}apifacetsclassic?online=${props.online}&query=${props.query}`;
+  const [expanded, setExpanded] = useState("");
   const { data, error, loading } = ApiFunc(url);
-  // console.log('apifacetclassic data: ',data);
 
   return (
     <React.Fragment>
@@ -45,149 +38,83 @@ const FacetColumnClassic = (props) => {
       >
         {!loading && <LoadingSpinner />}
         {error && <p>Errore: {error}</p>}
-        {data?.facets.map((item) => (
-          <Accordion key={generateUniqueKey()} defaultExpanded={false}>
-            <AccordionSummary
+        {data?.facets.map((item) => {
+          let values = Object.values(item);
+
+          return (
+            <Accordion
               key={generateUniqueKey()}
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
+              expanded={expanded == item.facet_cat}
+              onChange={() => {
+                setExpanded(expanded == item.facet_cat ? "" : item.facet_cat);
+              }}
+              defaultExpanded={false}
             >
-              <Typography
-                variant="h6"
-                sx={{
-                  color: theme.palette.primary.main,
-                }}
+              <AccordionSummary
                 key={generateUniqueKey()}
+                expandIcon={<ExpandMoreIcon />}
+                id={item.facet_cat}
+                className=""
               >
-                {item.facet_cat}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <List>
-                {item["0"]?.value && item["0"].value.length > 0 && (
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={`${item["0"].value} ${item["0"].count}`}
-                      sx={{
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                    <CustomizedSwitches label="" />
-                  </ListItem>
-                )}
-
-                {item["1"]?.value && item["1"].value.length > 0 && (
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={`${item["1"].value} ${item["1"].count}`}
-                      sx={{
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                    <CustomizedSwitches label="" />
-                  </ListItem>
-                )}
-
-                {item["2"]?.value && item["2"].value.length > 0 && (
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={`${item["2"].value} ${item["2"].count}`}
-                      sx={{
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                    <CustomizedSwitches label="" />
-                  </ListItem>
-                )}
-
-                {item["3"]?.value && item["3"].value.length > 0 && (
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={`${item["3"].value} ${item["3"].count}`}
-                      sx={{
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                    <CustomizedSwitches label="" />
-                  </ListItem>
-                )}
-
-                {item["4"]?.value && item["4"].value.length > 0 && (
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={`${item["4"].value} ${item["4"].count}`}
-                      sx={{
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                    <CustomizedSwitches label="" />
-                  </ListItem>
-                )}
-
-                {item["5"]?.value && item["5"].value.length > 0 && (
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={`${item["5"].value} ${item["5"].count}`}
-                      sx={{
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                    <CustomizedSwitches label="" />
-                  </ListItem>
-                )}
-
-                {item["6"]?.value && item["6"].value.length > 0 && (
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={`${item["6"].value} ${item["6"].count}`}
-                      sx={{
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                    <CustomizedSwitches label="" />
-                  </ListItem>
-                )}
-
-                {item["7"]?.value && item["7"].value.length > 0 && (
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={`${item["7"].value} ${item["7"].count}`}
-                      sx={{
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                    <CustomizedSwitches label="" />
-                  </ListItem>
-                )}
-
-                {item["8"]?.value && item["8"].value.length > 0 && (
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={`${item["8"].value} ${item["8"].count}`}
-                      sx={{
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                    <CustomizedSwitches label="" />
-                  </ListItem>
-                )}
-
-                {item["9"]?.value && item["9"].value.length > 0 && (
-                  <ListItem disablePadding>
-                    <ListItemText
-                      primary={`${item["9"].value} ${item["9"].count}`}
-                      sx={{
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                    <CustomizedSwitches label="" />
-                  </ListItem>
-                )}
-              </List>
-            </AccordionDetails>
-          </Accordion>
-        ))}
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: theme.palette.primary.main,
+                  }}
+                  key={generateUniqueKey()}
+                >
+                  {item.facet_cat}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <List>
+                  {values.length > 0 && (
+                    <>
+                      {values
+                        .filter(
+                          (v) => typeof v == "object" && (v.count || v.value)
+                        )
+                        .map((v, idx) => {
+                          let vl = `${v.value} ${v.count}`;
+                          return (
+                            <ListItem key={idx} disablePadding>
+                              <ListItemText
+                                primary={vl}
+                                sx={{
+                                  color: theme.palette.primary.main,
+                                }}
+                              />
+                              <CustomizedFilteredSwitches
+                                onChange={(e) => {
+                                  e.stopPropagation();
+                                  const exist = e.target.name;
+                                  let t = toggles[item.facet_cat] || [];
+                                  if (t) {
+                                    if (t.includes(exist)) {
+                                      t = t.filter((v) => v !== vl);
+                                    } else {
+                                      t.push(exist);
+                                    }
+                                  }
+                                  setToggles({
+                                    ...toggles,
+                                    [item.facet_cat]: t,
+                                  });
+                                }}
+                                checked={toggles[item.facet_cat]?.includes(vl)}
+                                name={vl}
+                                id={vl}
+                              />
+                            </ListItem>
+                          );
+                        })}
+                    </>
+                  )}
+                </List>
+              </AccordionDetails>
+            </Accordion>
+          );
+        })}
       </Box>
     </React.Fragment>
   );

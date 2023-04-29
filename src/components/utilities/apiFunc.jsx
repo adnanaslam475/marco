@@ -6,6 +6,7 @@ const ApiFunc = (url) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const controllerRef = useRef(new AbortController());
+
   const cancel = () => {
     controllerRef.current.abort();
   };

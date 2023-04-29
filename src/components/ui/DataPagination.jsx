@@ -1,16 +1,20 @@
-import React from 'react';
-import {Stack, Box, ListItem, Pagination, TablePagination} from '@mui/material';
+import React from "react";
+import Pagination from "@mui/material/Pagination";
 
 const DataPagination = (props) => {
+  const { onChange, page, count } = props;
+  console.log("cpunt", count, count / 10);
   return (
-      <Pagination 
+    <Pagination
+      onChange={onChange}
       showFirstButton={true}
       showLastButton={true}
-      count={props.count}
-      color="primary" 
-      size='large' 
-      />
+      page={page}
+      count={count / 10}
+      color="primary"
+      size="large"
+    />
   );
-}
+};
 
 export default DataPagination;

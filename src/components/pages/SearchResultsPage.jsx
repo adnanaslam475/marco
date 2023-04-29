@@ -17,9 +17,8 @@ const SearchResultsPage = () => {
   const query = encodeURI(
     params.get("q").replace(/\s/g, "+").replaceAll(";", "")
   ).replaceAll("|", "");
-  console.log("[SearchResultPage.js] const query: ", query);
+  // console.log("[SearchResultPage.js] const query: ", query);
   const fields = params.get("fields");
-  console.log("[SearchResultPage.js] const fields: ", fields);
   const sort = params.get("sort");
 
   const box1url = `${API_URL}apisearchbase?online=${params.get(

@@ -1,8 +1,8 @@
 import * as React from "react";
-import { styled } from "@mui/material/styles";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
 
 const IOSSwitch = styled((props) => (
   <Switch
@@ -61,6 +61,22 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
+export function CustomizedFilteredSwitches(props) {
+  const { id, name, onChange, checked = false } = props;
+  return (
+    <FormGroup>
+      <FormControlLabel
+        name={name}
+        id={id}
+        checked={checked}
+        defaultChecked={checked}
+        onChange={onChange}
+        control={<IOSSwitch sx={{ m: 1 }} />}
+        label={props.label}
+      />
+    </FormGroup>
+  );
+}
 function CustomizedSwitches(props) {
   return (
     <FormGroup>

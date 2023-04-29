@@ -1,26 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Grid,
-  Card,
-  Container,
-  Button,
-  Box,
-  Slide,
-  CardContent,
-  Typography,
-  AppBar,
-} from "@mui/material";
-import {
-  Toolbar,
-  Divider,
-  Stack,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import Accordion from "@mui/material/Accordion";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import Toolbar from "@mui/material/Toolbar";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AppBar from "@mui/material/AppBar";
+import Typography from "@mui/material/Typography";
+import CardContent from "@mui/material/CardContent";
+import Slide from "@mui/material/Slide";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Card from "@mui/material/Card";
+import Grid from "@mui/material/Grid";
+import Slider from "react-slick";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
 import SummaryResultItem from "./SummaryResultItem";
 import Facetsidebar from "./Facetsidebar";
 import FacetColumnClassic from "./FacetColumnClassic";
@@ -28,55 +24,59 @@ import theme from "../../assets/theme";
 import ConsoleSwitchContainer from "./filters/ConsoleSwitchContainer";
 import CustomizedSwitches from "./filters/IosSwitch";
 
-import ConsoleSwitch from "./filters/ConsoleSwitch";
 import ApiFunc from "../utilities/apiFunc";
 import { API_URL } from "../utilities/apiUrl";
-import { materialtype } from "../../constants";
+import {
+  ArrowBackIos,
+  ArrowForward,
+  ArrowForwardIos,
+} from "@mui/icons-material";
+
+const normal = (obj) =>
+  Object.keys(obj)
+    .map((v) => (v + "=" + obj[v] || {}).trim())
+    .join("&");
 
 const ResultSummaryBar = (props) => {
-  const navigate = useNavigate();
   let location = useLocation();
+  const [filters, setfilters] = useState({
+    lang: [],
+    locations: [],
+    materialtype: [],
+    sede: [],
+    tag008date: [],
+  });
+
+  const [toggles, setToggles] = useState({});
   let params = new URLSearchParams(location.search);
 
-  // var userChoicesDict = {};
-
-  // To store user choices, you can update the query parameters in the URL with the new values.
-  // For example, if the user selects a value in a dropdown,
-  // you can update the corresponding query parameter with the selected value.
-  // You can do this by creating a function that updates the query parameters and sets them to the new value:
-  const updateQueryParam = (paramName, value) => {
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set(paramName, value);
-    navigate.push({ search: searchParams.toString() });
-  };
-
-  // Here, paramName is the name of the query parameter you want to update, and value is the new value for that parameter.
-  // location and history are both provided by the useLocation and useHistory hooks from react-router-dom.
-  // You can then call this function from your component when the user selects a new value:
-  const handleDropdownChange = (event) => {
-    updateQueryParam("selectedValue", event.target.value);
-  };
+  // const updateQueryParam = (paramName, value) => {
+  //   const searchParams = new URLSearchParams(location.search);
+  //   searchParams.set(paramName, value);
+  //   navigate.push({ search: searchParams.toString() });
+  // };
 
   const query = encodeURI(
     params.get("q").replace(/\s/g, "+").replaceAll(";", "")
   ).replaceAll("|", "");
-  // console.log("[ResultSummaryBar.js] const query: ",query);
   const fields = params.get("fields");
   const sort = params.get("sort");
   const ord = params.get("ord");
 
   // URL API CALLS
-  // https://stackoverflow.com/questions/69955965/proxying-api-requests-in-production-for-react-express-app
+
   const box1url = `${API_URL}apisearchbase?online=${params.get(
     "fq"
   )}&filter=1&query=${encodeURI(
     query
   )}&fields=${fields}&start=0&sort=${sort}&ord=${ord}`;
+
   const box2url = `${API_URL}apisearchbase?online=${params.get(
     "fq"
   )}&filter=2&query=${encodeURI(
     query
   )}&fields=${fields}&start=0&sort=${sort}&ord=${ord}`;
+
   const box3url = `${API_URL}apisearchbase?online=${params.get(
     "fq"
   )}&filter=3&query=${encodeURI(
@@ -88,7 +88,6 @@ const ResultSummaryBar = (props) => {
     query
   )}&fields=${fields}&start=0&sort=${sort}&ord=${ord}`;
 
-  // checkboxes console
   // facets api call, response with several arrays: bibliographic material type | language | year | branch | location
   const checkboxesUrl = `${API_URL}apicheckboxesfacets?online=${params.get(
     "fq"
@@ -181,9 +180,6 @@ const ResultSummaryBar = (props) => {
             {/* accordion dashboard/console di affinamento */}
             <Accordion>
               <AccordionSummary
-                // sx={{
-                //   backgroundColor: '#395883'
-                // }}
                 expandIcon={<ExpandMoreIcon color="primary" />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
@@ -195,12 +191,16 @@ const ResultSummaryBar = (props) => {
 
               <AccordionDetails>
                 <Container maxWidth="xl" sx={{ marginTop: "1rem" }}>
-                  {/* a ConsoleSwitchContainer in components/ui/filters/ vanno passate props con le faccette  */}
-
-                  <ConsoleSwitchContainer arr={data} />
-
-                  <CustomizedSwitches label="risorse disponibili online" />
-
+                  <ConsoleSwitchContainer
+                    filters={filters}
+                    setfilters={setfilters}
+                    arr={data}
+                  />
+                  <CustomizedSwitches
+                    toggles={toggles}
+                    setToggles={setToggles}
+                    label="risorse disponibili online"
+                  />
                   {/* due colonne facets qui */}
                   <Grid container spacing={2}>
                     <Grid item xs={12} lg={12}>
@@ -213,10 +213,10 @@ const ResultSummaryBar = (props) => {
                     <Facetsidebar
                       query={params.get("q")}
                       filter="1"
-                      // boxtype={location.state.boxtype}
+                      toggles={toggles}
+                      setToggles={setToggles}
                       online={params.get("fq")}
                     />
-
                     {/* colonna dx classic facets */}
                     <Grid item xs={12} lg={6}>
                       <Typography
@@ -227,6 +227,8 @@ const ResultSummaryBar = (props) => {
                         Per Contenuto
                       </Typography>
                       <FacetColumnClassic
+                        setToggles={setToggles}
+                        toggles={toggles}
                         query={params.get("q")}
                         online={params.get("fq")}
                       />
@@ -240,18 +242,84 @@ const ResultSummaryBar = (props) => {
                       />
                     </Grid>
                   </Grid>
+                  <Slider
+                    dots={true}
+                    infinite={true}
+                    speed={500}
+                    slidesToShow={3}
+                    slidesToScroll={3}
+                    arrows={true}
+                    nextArrow={
+                      <ArrowForwardIos
+                        fontSize="large"
+                        className="arrow"
+                        color="primary"
+                      />
+                    }
+                    prevArrow={
+                      <ArrowBackIos
+                        fontSize="large"
+                        color="primary"
+                        className="arrow"
+                      />
+                    }
+                    responsive={[
+                      {
+                        breakpoint: 1024,
+                        settings: {
+                          slidesToShow: 3,
+                          slidesToScroll: 3,
+                        },
+                      },
+                    ]}
+                  >
+                    {[
+                      "https://cdn.pixabay.com/photo/2015/04/19/08/32/rose-729509_960_720.jpg",
+                      "https://cdn.pixabay.com/photo/2015/03/30/20/33/heart-700141_960_720.jpg",
+                      "https://cdn.pixabay.com/photo/2012/03/04/01/01/father-22194_960_720.jpg",
+                      "https://cdn.pixabay.com/photo/2014/11/30/14/11/cat-551554_960_720.jpg",
+                      "https://cdn.pixabay.com/photo/2016/03/28/12/35/cat-1285634_960_720.png",
+                      "https://cdn.pixabay.com/photo/2015/04/23/21/59/tree-736877_960_720.jpg",
+                      "https://cdn.pixabay.com/photo/2017/07/24/19/57/tiger-2535888_960_720.jpg",
+                      "https://cdn.pixabay.com/photo/2014/04/13/20/49/cat-323262_960_720.jpg",
+                    ].map((v) => (
+                      <div
+                        className="aaaaaaaaa"
+                        style={{ maxHeight: "200px" }}
+                        key={v}
+                      >
+                        <img
+                          src={v}
+                          alt=""
+                          style={{
+                            width: "95%",
+                            height: "200px",
+                          }}
+                          className=""
+                        />
+                      </div>
+                    ))}
+                  </Slider>
 
                   <Button
                     variant="contained"
                     sx={{
                       marginY: "1rem",
                     }}
+                    onClick={() => {
+                      history.pushState(
+                        {},
+                        "",
+                        `${location.search}?${normal(filters)}&${normal(
+                          toggles
+                        )}`
+                      );
+                    }}
                   >
                     Applica i filtri
                   </Button>
                 </Container>
 
-                {/* applica i filtri */}
                 <Container
                   maxWidth="lg"
                   sx={{
